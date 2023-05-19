@@ -1,27 +1,27 @@
-import jwt, { JwtPayload } from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import asyncHandler from 'express-async-handler'
-import User from '../model/userModel'
-import { RequestData } from '../controllers/userController';
+import asyncHandler from 'express-async-handler';
+import User from '../model/userModel';
+import RequestData from '../controllers/userController';
 
-export const verifyJWT = (token: string)=>{
+export const verifyJWT = (token: string) => {
 
-            try {
-                const decoded = jwt.verify(token, `${process.env.JWT_SECRET}`);
-                return {payload: decoded}
-            } catch (error) {
-                console.log(error)
-                return {payload: null}
-                
-            }
-        }
+  try {
+    const decoded = jwt.verify(token, `${process.env.JWT_SECRET}`);
+    return { payload: decoded };
+  } catch (error) {
+    console.log(error);
+    return { payload: null };
 
-interface TokenPayload{
-    id: string,
-    email : string
+  }
+};
+
+interface TokenPayload {
+  id: string,
+  email: string;
 }
 
-const protect = asyncHandler(async (req:Request, res:Response, next:NextFunction) => {
+const protect = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   let token;
 
   if (
@@ -33,14 +33,14 @@ const protect = asyncHandler(async (req:Request, res:Response, next:NextFunction
       token = req.headers.authorization.split(" ")[1];
 
       /* Verify token */
-        const decoded : any = jwt.verify(token, `${process.env.JWT_SECRET}`);
-        // const decoded: TokenPayload | JwtPayload = verifyJWT(token)
-        
-        console.log("decoded data", decoded)
-        console.log("decoded data", decoded.id)
-        
+      const decoded: any = jwt.verify(token, `${process.env.JWT_SECRET}`);
+      // const decoded: TokenPayload | JwtPayload = verifyJWT(token)
+
+      console.log("decoded data", decoded);
+      console.log("decoded data", decoded.id);
+
       /* Get user from the token */
-     const reqUser: RequestData | any = await User.findById(decoded.id).select("-password");
+      const reqUser: RequestData | any = await User.findById(decoded.id).select("-password");
       if (reqUser) {
         next();
       } else {
