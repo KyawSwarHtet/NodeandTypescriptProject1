@@ -3,7 +3,6 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 import cors from "cors";
-import mongoose from "mongoose";
 import path from "path";
 import { config } from "dotenv";
 import userRouter from "./router/user-route";

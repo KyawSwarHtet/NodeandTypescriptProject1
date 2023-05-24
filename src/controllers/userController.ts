@@ -324,12 +324,10 @@ const deleteUserAccount = async (req: Request, res: Response) => {
         );
 
     await User.findByIdAndRemove(id).exec();
-    res
-      .status(200)
-      .json({
-        status: "Success",
-        message: "User Account Deleted Successfully",
-      });
+    res.status(200).json({
+      status: "Success",
+      message: "User Account Deleted Successfully",
+    });
     // res.send();
   } catch (error) {
     console.log(error);

@@ -1,12 +1,6 @@
-import express from "express";
-import bodyParser from "body-parser";
-import cookieParser from "cookie-parser";
-import compression from "compression";
-import cors from "cors";
+
 import mongoose from "mongoose";
-import path from "path";
 import { config } from "dotenv";
-import userRouter from "../src/router/user-route";
 import ServerData from "./serverapp";
 
 const app = ServerData();
