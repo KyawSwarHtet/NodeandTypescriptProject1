@@ -1,40 +1,29 @@
-import jwt from 'jsonwebtoken';
-import fs from 'fs';
+import jwt from "jsonwebtoken";
+import fs from "fs";
 
-import mainPath from '../baseFilepath';
-import User from '../model/userModel';
-import bcrypt from 'bcryptjs';
-import path from 'path';
-import { Request, Response } from 'express';
-import { ObjectId } from 'mongoose';
+import mainPath from "../baseFilepath";
+import User from "../model/userModel";
+import bcrypt from "bcryptjs";
+import path from "path";
+import { Request, Response } from "express";
+import { ObjectId } from "mongoose";
 
-
-interface RequestData {
-  id: ObjectId,
-  username: string,
-  email: string,
-  password: string,
-  login: Boolean,
-  gender: string,
-  address: string,
+export interface RequestData {
+  id: ObjectId;
+  username: string;
+  email: string;
+  password: string;
+  login: Boolean;
+  gender: string;
+  address: string;
   profilePicture: Array<ProfileData | null>;
 }
 
 export type ProfileData = {
-  fileName: string,
-  filePath: string,
-  fileType: string,
+  fileName: string;
+  filePath: string;
+  fileType: string;
   fileSize: string;
-
-};
-
-
-const getAllUser = (req: Request, res: Response) => {
-  res.render("user/register", {
-    pageTitle: "Register",
-    path: "/register"
-
-  });
 };
 
 //Register user
@@ -52,7 +41,6 @@ const registerUser = async (req: Request, res: Response) => {
         status: "FAILED",
         message: "Empty input Fields!",
       });
-
     }
 
     //checking user name
@@ -87,7 +75,6 @@ const registerUser = async (req: Request, res: Response) => {
             status: "FAILED",
             message: "User with the provided email already exists",
           });
-
         }
         //to create a new user
         //password handling
@@ -108,7 +95,6 @@ const registerUser = async (req: Request, res: Response) => {
 
                 res.status(201).json(result);
                 //  res.redirect("/register");
-
               })
               .catch((err) => {
                 res.status(400).json({
@@ -123,7 +109,6 @@ const registerUser = async (req: Request, res: Response) => {
               message: "An error occurred while hashing password!",
             });
           });
-
       })
       .catch((err) => {
         res.status(400).json({
@@ -131,11 +116,9 @@ const registerUser = async (req: Request, res: Response) => {
           message: "An error occured while checking for existing user!",
         });
       });
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error);
   }
-
 };
 
 //@route Post/api/users/login
@@ -155,10 +138,9 @@ const loginUser = async (req: Request, res: Response) => {
     /* Check for user email*/
     const user: RequestData | null = await User.findOne({ email });
     if (user && (await bcrypt.compare(password, user.password))) {
-
       User.updateOne({ _id: user.id }, { login: true })
         .then(() => {
-          res.status(201).json({
+          res.status(200).json({
             _id: user.id,
             username: user.username,
             email: user.email,
@@ -178,14 +160,13 @@ const loginUser = async (req: Request, res: Response) => {
         message: "Email, Password is something wrong",
       });
     }
-
   } catch (error) {
     console.log(error);
   }
 };
 
 /*Generate JWT */
-const generateToken = (id: ObjectId) => {
+export const generateToken = (id: ObjectId | object) => {
   return jwt.sign({ id }, `${process.env.JWT_SECRET}`, {
     expiresIn: "30d",
   });
@@ -193,7 +174,6 @@ const generateToken = (id: ObjectId) => {
 
 //update user information fucntion
 const updateUser = async (req: Request, res: Response) => {
-
   try {
     const { username, address, gender }: RequestData = req.body;
     const { id } = req.params;
@@ -231,7 +211,6 @@ const updateUser = async (req: Request, res: Response) => {
   } catch (error) {
     console.log(error);
   }
-
 };
 
 //update user profile img fucntion
@@ -240,7 +219,7 @@ const updateUserProfile = async (req: Request, res: Response) => {
     const profilePicture = req.file;
     const { id } = req.params;
 
-    const userDetail = await User.findById(id);
+    const userDetail: any = await User.findById(id);
 
     /* Check for user */
     if (!userDetail) {
@@ -259,17 +238,21 @@ const updateUserProfile = async (req: Request, res: Response) => {
         fileSize: fileSizeFormatter(profilePicture.size, 2),
       };
       filesArray.push(file);
-      console.log("profile path", userDetail.profilePicture[0]);
-      console.log("profile path 1", userDetail.profilePicture);
-      console.log("profile path datail", userDetail);
-      if (userDetail.profilePicture[0] !== undefined || userDetail.profilePicture.length !== 0) {
+
+      if (
+        userDetail.profilePicture[0] !== undefined ||
+        userDetail.profilePicture.length !== 0
+      ) {
         //for Image File to when when we do update picture
-        fs.unlink(path.join(mainPath, userDetail.profilePicture[0].filePath), (err) => {
-          if (err) {
-            return console.log("error occur", err);
+        fs.unlink(
+          path.join(mainPath, userDetail.profilePicture[0].filePath),
+          (err) => {
+            if (err) {
+              return console.log("error occur", err);
+            }
+            console.log("file is deleted successully");
           }
-          console.log("file is deleted successully");
-        });
+        );
       }
       //update user
       await User.updateOne(
@@ -291,11 +274,9 @@ const updateUserProfile = async (req: Request, res: Response) => {
       profilePicture: updatedData?.profilePicture,
       login: updatedData?.login,
     });
-
   } catch (error) {
     console.log(error);
   }
-
 };
 
 //for img file format
@@ -314,7 +295,6 @@ const fileSizeFormatter = (bytes: number, decimal: number) => {
 // for all deletepost
 //@route Delete/api/deletepost/:id
 const deleteUserAccount = async (req: Request, res: Response) => {
-
   try {
     // const id = req.params.id;
     const id = req.params.id;
@@ -329,24 +309,29 @@ const deleteUserAccount = async (req: Request, res: Response) => {
         message: "user not found",
       });
     }
-    userDetail.profilePicture[0] === null || userDetail.profilePicture.length <= 0
+    userDetail.profilePicture[0] === null ||
+    userDetail.profilePicture.length <= 0
       ? console.log("file is empty file")
-      :
-      fs.unlink(path.join(mainPath, userDetail.profilePicture[0].filePath), (err) => {
-        // return fs.unlink(path.join(data.filePath), (err) => {
-        if (err) {
-          return console.log("error occur", err);
-        }
-        console.log("file is deleted successully");
-      });
+      : fs.unlink(
+          path.join(mainPath, userDetail.profilePicture[0].filePath),
+          (err) => {
+            // return fs.unlink(path.join(data.filePath), (err) => {
+            if (err) {
+              return console.log("error occur", err);
+            }
+            console.log("file is deleted successully");
+          }
+        );
 
     await User.findByIdAndRemove(id).exec();
-    res.status(200).json("User Account Deleted Successfully");
+    res.status(200).json({
+      status: "Success",
+      message: "User Account Deleted Successfully",
+    });
     // res.send();
   } catch (error) {
     console.log(error);
   }
-
 };
 
 /*get all user without token */
@@ -370,8 +355,12 @@ const getUserDetail = async (req: Request, res: Response) => {
   }
 };
 
-
-
-export const userInfo = { getAllUser, registerUser, loginUser, updateUser, updateUserProfile, deleteUserAccount, getAlluser, getUserDetail };
-
-export default RequestData;
+export const userInfo = {
+  registerUser,
+  loginUser,
+  updateUser,
+  updateUserProfile,
+  deleteUserAccount,
+  getAlluser,
+  getUserDetail,
+};
