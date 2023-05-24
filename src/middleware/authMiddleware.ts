@@ -14,13 +14,8 @@ export const verifyJWT = (token: string)=>{
                 return {payload: null}
                 
             }
-        }
-
-interface TokenPayload{
-    id: string,
-    email : string
 }
-
+        
 const protect = asyncHandler(async (req:Request, res:Response, next:NextFunction) => {
   let token;
 
