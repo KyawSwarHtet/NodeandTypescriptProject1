@@ -6,6 +6,7 @@ import mongoose, { ObjectId } from "mongoose";
 import dotenv from "dotenv";
 import { generateToken } from "../controllers/userController";
 import path from "path";
+
 const app = ServerData();
 dotenv.config();
 
@@ -17,7 +18,7 @@ let userId: string | ObjectId; //take user id from user login
 
 const testing_image = path.resolve(__dirname, `./test_images/hair5.jpg`);
 
-console.log("testingimage ", testing_image);
+// console.log("testingimage ", testing_image);
 
 export const userPayload = {
   email: "kyawswar1@gmail.com",
@@ -33,8 +34,8 @@ export const emptyuserPayload = {
 
 export const InvaliduserPayload = {
   email: "kyawswar",
-  username: "J",
-  password: "12ks",
+  username: "Jawerwe",
+  password: "wewew45345345",
 };
 
 export const successLoginPayload = {
@@ -43,13 +44,13 @@ export const successLoginPayload = {
 };
 
 describe("product", () => {
-  /* Connecting to the database before each test. */
+  /* Connecting to the database before all test. */
   beforeAll(async () => {
     await mongoose.connect(process.env.TEST_MONGO_URL!);
     await User.deleteMany();
   });
 
-  /* Closing database connection after each test. */
+  /* Closing database connection after all test. */
   afterAll(async () => {
     await mongoose.connection.close();
   });

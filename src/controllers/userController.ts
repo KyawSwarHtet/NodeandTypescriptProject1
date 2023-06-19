@@ -58,6 +58,7 @@ const registerUser = async (req: Request, res: Response) => {
         message: "Invalid email entered",
       });
     }
+
     //checking password length
     if (password.length < 8) {
       return res.status(400).json({
