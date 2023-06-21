@@ -1,4 +1,16 @@
 {
+  "name": "nodetestprojectwithtypescript",
+  "version": "1.0.0",
+  "description": "node with typescript",
+  "main": "index.js",
+  "scripts": {
+    "server": "nodemon ./src/server.ts",
+    "client": "npm run dev --prefix client",
+    "dev": "concurrently \"npm run server \" \"npm run client\"",
+    "start": "nodemon ./dist/server.js",
+    "clean": "rimraf ./dist",
+    "test": "jest --watchAll"
+  },
   "dependencies": {
     "@types/bcryptjs": "^2.4.2",
     "@types/jsonwebtoken": "^9.0.2",

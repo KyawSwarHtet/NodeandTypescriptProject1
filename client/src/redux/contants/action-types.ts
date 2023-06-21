@@ -1,0 +1,12 @@
+import { IActions } from "../../datatypes/userDataTypes";
+
+export const ActionTypes: IActions = {
+  FETCH_ALL_USER: "FETCH_ALL_USER",
+  REGISTER_USER: "REGISTER_USER",
+  LOGIN_USER: "LOGIN_USER",
+  USER_DETAIL: "USER_DETAIL",
+  UPDATE_USER: "UPDATE_USER",
+  UPDATE_USER_PROFILE: "UPDATE_USER_PROFILE",
+  DELETE_USER: "DELETE_USER",
+  LOGOUT_USER: "LOGOUT_USER",
+};
