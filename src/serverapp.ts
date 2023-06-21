@@ -35,6 +35,11 @@ const ServerData = () => {
   // api path
   app.use("/user", userRouter);
 
+  //36mins
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "/client/index.html"));
+  });
+
   return app;
 };
 
